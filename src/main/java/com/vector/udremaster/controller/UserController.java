@@ -1,53 +1,66 @@
 package com.vector.udremaster.controller;
 
-import com.vector.udremaster.entity.Playlist;
-import com.vector.udremaster.entity.PlaylistId;
-import com.vector.udremaster.repository.PlaylistRepository;
+import com.vector.udremaster.entity.User;
 import com.vector.udremaster.service.impl.UserServiceImpl;
+import com.vector.udremaster.vsya_fignya.jsonwrapper.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import javax.security.auth.login.FailedLoginException;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
     UserServiceImpl userService;
 
-    @Autowired
-    PlaylistRepository playlistRepository;
-/*
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-
- */
-    @GetMapping
-    public void showDefault(@RequestParam("login") String login, @RequestParam("password") String password) throws NoSuchAlgorithmException {
-
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(password.getBytes());
-        byte[] digest = md.digest();
-        String myHash = DatatypeConverter
-                .printHexBinary(digest).toUpperCase();
-
-        userService.signUp(login, myHash);
+    @PostMapping("/register")
+    public void signUp(@RequestParam("login") String login, @RequestParam("password") String password){
+        userService.signUp(login, password);
     }
 
-    @GetMapping("/login")
-    public void getDefault(@RequestParam("login") String login, @RequestParam("password") String password){
-        userService.signIn(login, password);
+    @ResponseBody
+    @GetMapping(value = "/login", produces = "application/json")
+    public UserId signIn(@RequestParam("login") String login, @RequestParam("password") String password)
+            throws FailedLoginException {
+        return new UserId(userService.signIn(login, password));
     }
 
-    @GetMapping("/pl")
-    public void addPlaylist(@RequestParam("user") long user, @RequestParam("audio") long audio){
-        playlistRepository.saveAndFlush(new Playlist(new PlaylistId(user, audio)));
+    @PostMapping(value = "/logout")
+    public void signOut(){
+        userService.signOut();
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/data")
+    public User getUser(@RequestParam("userid") long userId){
+        return userService.getUser(userId);
+    }
+
+    @PatchMapping(value = "/update/username")
+    public void updateUserUsername(@RequestParam("userid") long userId, @RequestParam("username") String username){
+        userService.setUsernameById(username, userId);
+    }
+
+    @PatchMapping(value = "/update/desc")
+    public void updateUserDescription(@RequestParam("userid") long userId, @RequestParam("desc") String description){
+        userService.setDescriptionById(description, userId);
+    }
+
+    @PatchMapping(value = "/update/email")
+    public void updateUserEmail(@RequestParam("userid") long userId, @RequestParam("email") String email){
+        userService.setEmailById(email, userId);
+    }
+
+    @PatchMapping(value = "/update/vidprevid")
+    public void updateUserVideoPreviewId(@RequestParam("userid") long userId, @RequestParam("videoid") long videoId){
+        userService.setVideoPreviewById(videoId, userId);
+    }
+
+    @PatchMapping(value = "/update/password")
+    public void updateUserPassword(@RequestParam("userid") long userId, @RequestParam("oldpassword") String oldPassword,
+                                   @RequestParam("newpassword") String newPassword){
+        userService.setPasswordById(oldPassword, newPassword, userId);
     }
 }

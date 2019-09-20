@@ -1,13 +1,9 @@
 package com.vector.udremaster.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
 @Table(name = "users")
@@ -39,12 +35,6 @@ public class User {
     @CreationTimestamp
     @Column(name = "created_on", nullable = false)
     private Timestamp createdOn;
-
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled;
-
-    @Transient
-    private Collection<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
 
     protected User(){}
 
@@ -115,20 +105,5 @@ public class User {
 
     public void setCreatedOn(Timestamp createdOn){
         this.createdOn = createdOn;
-    }
-
-    public boolean getEnabled() { return enabled; }
-
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public Collection<GrantedAuthority> getGrantedAuthoritiesList() {
-        return grantedAuthoritiesList;
-    }
-    public void setGrantedAuthoritiesList(Collection<GrantedAuthority> grantedAuthoritiesList) {
-        this.grantedAuthoritiesList = grantedAuthoritiesList;
     }
 }
