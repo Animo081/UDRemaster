@@ -23,9 +23,6 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "video_preview_id")
-    private long videoPreviewId;
-
     @Column(name = "login", nullable = false, unique = true)
     private String login;
 
@@ -73,14 +70,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public long getVideoPreviewId() {
-        return videoPreviewId;
-    }
-
-    public void setVideoPreviewId(long videoPreviewId) {
-        this.videoPreviewId = videoPreviewId;
     }
 
     public String getLogin(){

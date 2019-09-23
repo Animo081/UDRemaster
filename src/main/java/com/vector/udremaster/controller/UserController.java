@@ -2,7 +2,7 @@ package com.vector.udremaster.controller;
 
 import com.vector.udremaster.entity.User;
 import com.vector.udremaster.service.impl.UserServiceImpl;
-import com.vector.udremaster.vsya_fignya.jsonwrapper.UserId;
+import com.vector.udremaster.dto.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,11 +51,6 @@ public class UserController {
     @PatchMapping(value = "/update/email")
     public void updateUserEmail(@RequestParam("userid") long userId, @RequestParam("email") String email){
         userService.setEmailById(email, userId);
-    }
-
-    @PatchMapping(value = "/update/vidprevid")
-    public void updateUserVideoPreviewId(@RequestParam("userid") long userId, @RequestParam("videoid") long videoId){
-        userService.setVideoPreviewById(videoId, userId);
     }
 
     @PatchMapping(value = "/update/password")

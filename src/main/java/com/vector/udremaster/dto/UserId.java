@@ -1,4 +1,4 @@
-package com.vector.udremaster.vsya_fignya.jsonwrapper;
+package com.vector.udremaster.dto;
 
 public class UserId {
 

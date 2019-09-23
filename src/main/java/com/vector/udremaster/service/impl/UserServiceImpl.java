@@ -24,9 +24,9 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = userRepository.getPasswordByLogin(login);
 
         if (encodedPassword == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No such user");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such user");
         if (!passwordEncoder.matches(rawPassword, encodedPassword))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
 
         return userRepository.getUserByLogin(login).getUserId();
     }
@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signOut() {
 
+    }
+
+    @Override
+    public boolean existsById(long userId){
+        return userRepository.existsById(userId);
     }
 
     @Override
@@ -62,11 +67,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setVideoPreviewById(long videoId, long userId) {
-        userRepository.updateVideoPreviewIdByUserId(videoId, userId);
-    }
-
-    @Override
     public void setPasswordById(String oldPassword, String newPassword, long userId) {
 
         String encodedPassword = userRepository.getPasswordById(userId);
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         if (encodedPassword == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id ("+userId+")");
         if (!passwordEncoder.matches(oldPassword, encodedPassword))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
 
         userRepository.updatePasswordById(passwordEncoder.encode(newPassword), userId);
     }

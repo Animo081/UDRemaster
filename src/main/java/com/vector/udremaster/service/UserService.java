@@ -10,12 +10,13 @@ public interface UserService {
     void signUp(String login, String password) throws SQLIntegrityConstraintViolationException;
     void signOut();
 
+    boolean existsById(long userId);
+
     User getUser(long userId);
 
     void setUsernameById(String username, long userId);
     void setDescriptionById(String description, long userId);
     void setEmailById(String email, long userId);
-    void setVideoPreviewById(long videoId, long userId);
 
     void setPasswordById(String oldPassword, String newPassword, long userId);
 }

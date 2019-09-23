@@ -6,13 +6,13 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "media")
-public class Media {
+@Table(name = "files")
+public class File {
 
     @Id
-    @Column(name = "media_id", nullable = false)
+    @Column(name = "file_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long mediaId;
+    private long fileId;
 
     @Column(name = "url", nullable = false)
     private String url;
@@ -24,18 +24,30 @@ public class Media {
     private String type;
 
     @Column(name = "size", nullable = false)
-    private float size;
+    private long size;
 
     @CreationTimestamp
     @Column(name = "inserted_on", nullable = false)
     private Timestamp insertedOn;
 
-    public long getMediaId() {
-        return mediaId;
+    @Column(name = "owner_id", nullable = false)
+    private long ownerId;
+
+    protected File() {}
+
+    public File(String url, String name, String type, long size){
+        this.url = url;
+        this.name = name;
+        this.type = type;
+        this.size = size;
     }
 
-    public void setMediaId(long mediaId) {
-        this.mediaId = mediaId;
+    public long getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(long fileId) {
+        this.fileId = fileId;
     }
 
     public String getUrl() {
@@ -62,11 +74,11 @@ public class Media {
         this.type = type;
     }
 
-    public float getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(float size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -76,5 +88,13 @@ public class Media {
 
     public void setInsertedOn(Timestamp insertedOn) {
         this.insertedOn = insertedOn;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 }
