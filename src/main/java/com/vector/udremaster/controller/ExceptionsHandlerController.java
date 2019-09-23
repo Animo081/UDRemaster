@@ -1,6 +1,7 @@
 package com.vector.udremaster.controller;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,12 +18,16 @@ public class ExceptionsHandlerController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void uniqueConflict() {}
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "The element being requested" +
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "The element being requested" +
             " * does not exist")
     @ExceptionHandler(NoSuchElementException.class)
-    public void notFound() {}
+    public void noSuchElement() {}
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Could not store file")
     @ExceptionHandler(IOException.class)
     public void uploadError() {}
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Not Found")
+    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
+    public void notFound() {}
 }

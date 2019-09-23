@@ -4,6 +4,7 @@ import com.vector.udremaster.entity.User;
 import com.vector.udremaster.repository.UserRepository;
 import com.vector.udremaster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -19,16 +20,14 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public long signIn(String login, String rawPassword) {
+    public long signIn(String login, String rawPassword) throws ChangeSetPersister.NotFoundException {
 
-        String encodedPassword = userRepository.getPasswordByLogin(login);
+        User user = userRepository.findByLogin(login).orElseThrow(ChangeSetPersister.NotFoundException::new);
 
-        if (encodedPassword == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such user");
-        if (!passwordEncoder.matches(rawPassword, encodedPassword))
+        if (!passwordEncoder.matches(rawPassword, user.getPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
 
-        return userRepository.getUserByLogin(login).getUserId();
+        return user.getUserId();
     }
 
     @Override
@@ -47,35 +46,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(long userId) {
-        return userRepository.findById(userId).get();
+    public User getUser(long userId) throws ChangeSetPersister.NotFoundException {
+        return userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 
     @Override
-    public void setUsernameById(String username, long userId) {
-        userRepository.updateUsernameById(username, userId);
+    public void setUsernameById(String username, long userId) throws ChangeSetPersister.NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        user.setUsername(username);
+        userRepository.save(user);
     }
 
     @Override
-    public void setDescriptionById(String description, long userId) {
-        userRepository.updateDescriptionById(description, userId);
+    public void setDescriptionById(String description, long userId) throws ChangeSetPersister.NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        user.setDescription(description);
+        userRepository.save(user);
     }
 
     @Override
-    public void setEmailById(String email, long userId) {
-        userRepository.updateEmailById(email, userId);
+    public void setEmailById(String email, long userId) throws ChangeSetPersister.NotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        user.setEmail(email);
+        userRepository.save(user);
     }
 
     @Override
-    public void setPasswordById(String oldPassword, String newPassword, long userId) {
+    public void setPasswordById(String oldPassword, String newPassword, long userId) throws ChangeSetPersister.NotFoundException {
 
-        String encodedPassword = userRepository.getPasswordById(userId);
+        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
 
-        if (encodedPassword == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id ("+userId+")");
-        if (!passwordEncoder.matches(oldPassword, encodedPassword))
+        if (!passwordEncoder.matches(oldPassword, user.getPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
 
-        userRepository.updatePasswordById(passwordEncoder.encode(newPassword), userId);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

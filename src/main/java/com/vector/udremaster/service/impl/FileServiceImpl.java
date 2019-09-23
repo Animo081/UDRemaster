@@ -5,12 +5,14 @@ import com.vector.udremaster.repository.FileRepository;
 import com.vector.udremaster.service.FileService;
 import com.vector.udremaster.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.List;
 
 @Repository
 public class FileServiceImpl implements FileService {
@@ -31,16 +33,12 @@ public class FileServiceImpl implements FileService {
             uploadedFile.setOwnerId(ownerId);
             fileRepository.saveAndFlush(uploadedFile);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id ("+ownerId+")");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user id ("+ownerId+")");
         }
     }
 
     @Override
-    public File[] getUserFiles(long userId){
-        if (userService.existsById(userId)){
-            return fileRepository.getFilesByOwnerId(userId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id ("+userId+")");
-        }
+    public List<File> getUserFiles(long userId) throws ChangeSetPersister.NotFoundException {
+        return fileRepository.findAllByOwnerId(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 }
