@@ -36,11 +36,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signOut() {
-
-    }
-
-    @Override
     public boolean existsById(long userId){
         return userRepository.existsById(userId);
     }

@@ -18,7 +18,7 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
 
     @Autowired
-    FileRepository fileRepository;
+    private FileRepository fileRepository;
 
     @Autowired
     private FileUtils fileUtils;

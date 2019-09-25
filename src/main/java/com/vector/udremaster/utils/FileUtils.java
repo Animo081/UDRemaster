@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class FileUtils {
 
-    private static final String FILES_UPLOAD_DIR = "/files/";
+    public static final String FILES_UPLOAD_DIR = "/files/";
 
     @Autowired
     private HttpServletRequest request;
@@ -27,6 +27,7 @@ public class FileUtils {
         if (!file.isEmpty()) {
 
             String uploadsPath =  request.getServletContext().getRealPath(FILES_UPLOAD_DIR);
+            String path = request.getServletContext().getContextPath();
             if(! new File(uploadsPath).exists()) {
                 new File(uploadsPath).mkdir();
             }
@@ -38,7 +39,7 @@ public class FileUtils {
             File destination = new File(filePath);
             file.transferTo(destination);
 
-            return new com.vector.udremaster.entity.File(filePath, fileName, fileType, fileSize);
+            return new com.vector.udremaster.entity.File(filePath, destination.getName(), fileName, fileType, fileSize);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is empty");
         }

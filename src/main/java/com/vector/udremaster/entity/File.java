@@ -33,10 +33,14 @@ public class File {
     @Column(name = "owner_id", nullable = false)
     private long ownerId;
 
+    @Column(name = "real_name", nullable = false)
+    private String realName;
+
     protected File() {}
 
-    public File(String url, String name, String type, long size){
+    public File(String url, String realName, String name, String type, long size){
         this.url = url;
+        this.realName = realName;
         this.name = name;
         this.type = type;
         this.size = size;
@@ -96,5 +100,13 @@ public class File {
 
     public void setOwnerId(long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

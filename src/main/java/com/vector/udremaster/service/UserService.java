@@ -9,7 +9,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public interface UserService {
     long signIn(String login, String password) throws FailedLoginException, ChangeSetPersister.NotFoundException;
     void signUp(String login, String password) throws SQLIntegrityConstraintViolationException;
-    void signOut();
 
     boolean existsById(long userId);
 

@@ -8,27 +8,26 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @PostMapping("/register")
     public void signUp(@RequestParam("login") String login, @RequestParam("password") String password){
         userService.signUp(login, password);
     }
 
-    @ResponseBody
-    @GetMapping(value = "/login", produces = "application/json")
+    @GetMapping(value = "/login")
     public UserId signIn(@RequestParam("login") String login, @RequestParam("password") String password)
             throws ChangeSetPersister.NotFoundException {
-        return new UserId(userService.signIn(login, password));
+         return new UserId(userService.signIn(login, password));
     }
 
     @PostMapping(value = "/logout")
-    public void signOut(){
-        userService.signOut();
+    public void signOut() {
     }
 
     @ResponseBody
