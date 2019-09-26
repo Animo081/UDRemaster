@@ -1,10 +1,11 @@
 package com.vector.udremaster.controller;
 
-import com.vector.udremaster.dto.UserId;
 import com.vector.udremaster.entity.User;
 import com.vector.udremaster.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,19 +16,14 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    @PostMapping("/register")
-    public void signUp(@RequestParam("login") String login, @RequestParam("password") String password){
-        userService.signUp(login, password);
-    }
-
     @GetMapping(value = "/login")
-    public UserId signIn(@RequestParam("login") String login, @RequestParam("password") String password)
-            throws ChangeSetPersister.NotFoundException {
-         return new UserId(userService.signIn(login, password));
+    public void signIn() {
+
     }
 
     @PostMapping(value = "/logout")
-    public void signOut() {
+    public void signOut(Authentication authentication) {
+        return;
     }
 
     @ResponseBody
