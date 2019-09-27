@@ -29,14 +29,14 @@ public class BasicAuthConfiguration extends WebSecurityConfigurerAdapter {
             throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/**", "/file/**","/files/**").permitAll()
+                .antMatchers("/*").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .and().formLogin().loginProcessingUrl("/user/login")
+                .and().logout().logoutUrl("/user/logout");
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 
     @Override

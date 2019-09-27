@@ -18,12 +18,10 @@ public class UserController {
 
     @GetMapping(value = "/login")
     public void signIn() {
-
     }
 
     @PostMapping(value = "/logout")
     public void signOut(Authentication authentication) {
-        return;
     }
 
     @ResponseBody
