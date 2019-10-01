@@ -11,7 +11,7 @@ import static com.vector.udremaster.utils.FileUtils.FILES_UPLOAD_DIR;
 @Configuration
 @CrossOrigin(origins = "http://localhost:4200")
 @EnableWebMvc
-public class MvcConfig implements WebMvcConfigurer {
+public class ResourcesConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

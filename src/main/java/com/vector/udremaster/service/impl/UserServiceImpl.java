@@ -1,5 +1,6 @@
 package com.vector.udremaster.service.impl;
 
+import com.vector.udremaster.dto.UserData;
 import com.vector.udremaster.entity.User;
 import com.vector.udremaster.repository.UserRepository;
 import com.vector.udremaster.service.UserService;
@@ -46,23 +47,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUsernameById(String username, long userId) throws ChangeSetPersister.NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
-        user.setUsername(username);
-        userRepository.save(user);
-    }
+    public void setUserData(UserData userData) throws ChangeSetPersister.NotFoundException {
 
-    @Override
-    public void setDescriptionById(String description, long userId) throws ChangeSetPersister.NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
-        user.setDescription(description);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void setEmailById(String email, long userId) throws ChangeSetPersister.NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
-        user.setEmail(email);
+        User user = userRepository.findById(userData.getUserId()).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        user.setUsername(userData.getUsername());
+        user.setEmail(userData.getEmail());
+        user.setDescription(userData.getDescription());
         userRepository.save(user);
     }
 

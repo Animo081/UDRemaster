@@ -1,12 +1,14 @@
 package com.vector.udremaster.controller;
 
+import com.vector.udremaster.dto.UserData;
 import com.vector.udremaster.entity.User;
-import com.vector.udremaster.service.impl.UserServiceImpl;
+import com.vector.udremaster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.login.FailedLoginException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -14,40 +16,35 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
+    @PostMapping("/register")
+    public void signUp(@RequestParam("login") String login, @RequestParam("password") String password)
+            throws SQLIntegrityConstraintViolationException {
+        userService.signUp(login, password);
+    }
+
+    @ResponseBody
     @GetMapping(value = "/login")
-    public void signIn() {
+    public long signIn(@RequestParam("login") String login, @RequestParam("password") String password)
+            throws ChangeSetPersister.NotFoundException, FailedLoginException {
+        return userService.signIn(login, password);
     }
 
     @PostMapping(value = "/logout")
-    public void signOut(Authentication authentication) {
+    public void signOut() {
     }
 
     @ResponseBody
     @GetMapping(value = "/data")
-    public User getUser(@RequestParam("userid") long userId) throws ChangeSetPersister.NotFoundException {
+    public User getUser(@RequestParam("userid") long userId)
+            throws ChangeSetPersister.NotFoundException {
         return userService.getUser(userId);
     }
 
-    @PatchMapping(value = "/update/username")
-    public void updateUserUsername(@RequestParam("userid") long userId, @RequestParam("username") String username) throws ChangeSetPersister.NotFoundException {
-        userService.setUsernameById(username, userId);
-    }
-
-    @PatchMapping(value = "/update/desc")
-    public void updateUserDescription(@RequestParam("userid") long userId, @RequestParam("desc") String description) throws ChangeSetPersister.NotFoundException {
-        userService.setDescriptionById(description, userId);
-    }
-
-    @PatchMapping(value = "/update/email")
-    public void updateUserEmail(@RequestParam("userid") long userId, @RequestParam("email") String email) throws ChangeSetPersister.NotFoundException {
-        userService.setEmailById(email, userId);
-    }
-
-    @PatchMapping(value = "/update/password")
-    public void updateUserPassword(@RequestParam("userid") long userId, @RequestParam("oldpassword") String oldPassword,
-                                   @RequestParam("newpassword") String newPassword) throws ChangeSetPersister.NotFoundException {
-        userService.setPasswordById(oldPassword, newPassword, userId);
+    @PutMapping(value = "/update")
+    public void setUser(@RequestBody UserData userData)
+            throws ChangeSetPersister.NotFoundException {
+        userService.setUserData(userData);
     }
 }

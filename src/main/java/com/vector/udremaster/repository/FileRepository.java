@@ -1,6 +1,7 @@
 package com.vector.udremaster.repository;
 
 import com.vector.udremaster.entity.File;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -9,5 +10,7 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    Optional<List<File>> findAllByOwnerId(@Param("owner_id") long ownerId);
+    Optional<List<File>> findAllByOwnerId(@Param("owner_id") long ownerId, Pageable pagination);
+
+    long countByOwnerId(@Param("owner_id") long owner_id);
 }

@@ -1,5 +1,6 @@
 package com.vector.udremaster.service;
 
+import com.vector.udremaster.dto.UserData;
 import com.vector.udremaster.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
@@ -14,9 +15,7 @@ public interface UserService {
 
     User getUser(long userId) throws ChangeSetPersister.NotFoundException;
 
-    void setUsernameById(String username, long userId) throws ChangeSetPersister.NotFoundException;
-    void setDescriptionById(String description, long userId) throws ChangeSetPersister.NotFoundException;
-    void setEmailById(String email, long userId) throws ChangeSetPersister.NotFoundException;
+    void setUserData(UserData userData) throws ChangeSetPersister.NotFoundException;
 
     void setPasswordById(String oldPassword, String newPassword, long userId) throws ChangeSetPersister.NotFoundException;
 }

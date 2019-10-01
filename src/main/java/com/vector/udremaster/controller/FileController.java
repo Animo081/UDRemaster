@@ -1,7 +1,7 @@
 package com.vector.udremaster.controller;
 
 import com.vector.udremaster.entity.File;
-import com.vector.udremaster.service.impl.FileServiceImpl;
+import com.vector.udremaster.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +16,25 @@ import java.util.List;
 public class FileController {
 
     @Autowired
-    private FileServiceImpl fileService;
+    private FileService fileService;
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload")
     public void uploadFile(@RequestParam("userid") long userId, @RequestParam("file") MultipartFile file) throws IOException {
         fileService.uploadFile(file, userId);
     }
 
     @ResponseBody
     @GetMapping(value = "/download", produces = "application/json")
-    public List<File> getUserFilesUrls(@RequestParam("userid") long userId) throws ChangeSetPersister.NotFoundException {
-        return fileService.getUserFiles(userId);
+    public List<File> getUserFilesUrls(@RequestParam("userid") long userId,
+                                       @RequestParam("page") int page,
+                                       @RequestParam("size") int size) throws ChangeSetPersister.NotFoundException {
+
+        return fileService.getUserFiles(userId, page, size);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/count")
+    public long getFilesCount(@RequestParam("userid") long userId){
+        return fileService.getFilesCount(userId);
     }
 }

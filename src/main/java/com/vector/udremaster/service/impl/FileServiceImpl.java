@@ -3,9 +3,12 @@ package com.vector.udremaster.service.impl;
 import com.vector.udremaster.entity.File;
 import com.vector.udremaster.repository.FileRepository;
 import com.vector.udremaster.service.FileService;
+import com.vector.udremaster.service.UserService;
 import com.vector.udremaster.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +27,11 @@ public class FileServiceImpl implements FileService {
     private FileUtils fileUtils;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Override
     public void uploadFile(MultipartFile file, long ownerId) throws IOException {
+
         if (userService.existsById(ownerId)) {
             File uploadedFile = fileUtils.saveUploaded(file);
             uploadedFile.setOwnerId(ownerId);
@@ -38,7 +42,14 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<File> getUserFiles(long userId) throws ChangeSetPersister.NotFoundException {
-        return fileRepository.findAllByOwnerId(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    public List<File> getUserFiles(long userId, int page, int size)
+            throws ChangeSetPersister.NotFoundException {
+        Pageable pagination = PageRequest.of(page,size);
+        return fileRepository.findAllByOwnerId(userId, pagination).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    }
+
+    @Override
+    public long getFilesCount(long userId) {
+        return fileRepository.countByOwnerId(userId);
     }
 }

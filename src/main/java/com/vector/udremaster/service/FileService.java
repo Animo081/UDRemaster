@@ -11,5 +11,7 @@ public interface FileService {
 
     void uploadFile(MultipartFile file, long ownerId) throws IOException;
 
-    List<File> getUserFiles(long userId) throws ChangeSetPersister.NotFoundException;
+    List<File> getUserFiles(long userId, int page, int size) throws ChangeSetPersister.NotFoundException;
+
+    long getFilesCount(long userId);
 }
